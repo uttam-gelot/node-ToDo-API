@@ -20,11 +20,11 @@ MongoClient.connect("mongodb://localhost:27017/ToDoApp", { useNewUrlParser: true
     //     console.log(JSON.stringify(result, undefined, 4));
     // });
 
-    // client.close();
-
     //findOneDelete
     db.collection("ToDos").findOneAndDelete({text: "call home"}).then((result) =>
     {
         console.log(result);
     });
+
+    client.close();
 });
