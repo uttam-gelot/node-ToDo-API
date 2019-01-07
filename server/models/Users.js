@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const _ = require("lodash");
-const bycrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 
 var UserSchema = new mongoose.Schema(
 {
@@ -99,6 +99,28 @@ UserSchema.statics.findByToken = function (token)
         'tokens.access' : "auth"
     });
 };
+
+UserSchema.statics.findByCredentials = function (email, password)
+{
+    var Users = this;
+    return Users.findOne({ email}).then((user) =>
+    {
+        if (!user)
+            return Promise.reject({error :"user not found.."});
+        return new Promise((resolve, reject) =>
+        {
+            bcrypt.compare(password, user.password, (error, result) =>
+            {
+                if(!result)
+                    return reject({error : "password doesn't match.."});
+                resolve(user);
+            });
+        });
+    }).catch((error) => 
+    {
+        return Promise.reject(error);
+    });
+}
 
 var Users = mongoose.model("Users",UserSchema);
 module.exports = {Users};
