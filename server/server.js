@@ -6,6 +6,7 @@ const _ = require("lodash");
 const {mongoose} = require("./db/mongoose.js");
 const {ToDo} = require("./models/ToDo.js");
 const {Users} = require("./models/Users.js");
+const {authenticate} = require("./middleware/authenticate");
 
 const port = process.env.PORT || 5555;
 const app = express();
@@ -124,6 +125,11 @@ app.post("/users", (request, response) =>
         console.log(error);
         response.status(404).send({error});
     });
+});
+
+app.get("/users/me", authenticate, (request, response) =>
+{
+    response.send(request.user);
 });
 
 app.listen(port, () =>
