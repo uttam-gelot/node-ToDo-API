@@ -6,6 +6,7 @@ const {mongoose} = require("./db/mongoose.js");
 const {ToDo} = require("./models/ToDo.js");
 const {Users} = require("./models/Users.js");
 
+const port = process.env.PORT || 5555;
 const app = express();
 
 app.use(bodyParser.json());
@@ -55,7 +56,7 @@ app.get("/todos", (request, response) =>
     });
 });
 
-app.listen(5555, () =>
+app.listen(port, () =>
 {
-    console.log("Server is up on port 5555");
+    console.log(`Server is up on port ${port}`);
 });
