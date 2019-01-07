@@ -107,6 +107,25 @@ app.patch("/todos/:id", (request, response) =>
     });
 });
 
+app.post("/users", (request, response) =>
+{
+    var userData = _.pick(request.body, ['email', 'password']);
+    
+    var user = new Users(userData);
+    user.save().then((result) =>
+    {
+        // response.send({result});
+        return user.generateAuthToken();
+    }).then((token) =>
+    {
+        response.header("x-auth", token).send(user);
+    }).catch((error) =>
+    {
+        console.log(error);
+        response.status(404).send({error});
+    });
+});
+
 app.listen(port, () =>
 {
     console.log(`Server is up on port ${port}`);
