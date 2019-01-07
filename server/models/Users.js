@@ -48,9 +48,9 @@ UserSchema.pre("save", function (next)
     var user = this;
     if(user.isModified("password"))
     {
-        bycrypt.genSalt(10, (error, salt) =>
+        bcrypt.genSalt(10, (error, salt) =>
         {
-            bycrypt.hash(user.password, salt, (error, hash) =>
+            bcrypt.hash(user.password, salt, (error, hash) =>
             {
                 user.password = hash;
                 next();
@@ -120,7 +120,21 @@ UserSchema.statics.findByCredentials = function (email, password)
     {
         return Promise.reject(error);
     });
-}
+};
 
+UserSchema.methods.removeToken = function (token) 
+{
+    var user = this;
+    return user.update(
+    {
+        $pull :
+        {
+            tokens :
+            {
+                token : token
+            }
+        }
+    });
+};
 var Users = mongoose.model("Users",UserSchema);
 module.exports = {Users};
